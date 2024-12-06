@@ -64,7 +64,6 @@ CREATE TABLE employee_time_tracking (
     employee_id INT NOT NULL,
     start_time TIMESTAMP NOT NULL,
     end_time TIMESTAMP,
-    schedule_id INT,
     total_hours_worked INT GENERATED ALWAYS AS (
         EXTRACT(EPOCH FROM (end_time - start_time)) / 3600
     ) STORED,
