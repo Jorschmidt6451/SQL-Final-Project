@@ -69,19 +69,12 @@ CREATE TABLE employee_time_tracking (
     schedule_id INT, -- Links to the schedule (optional for unscheduled work)
     start_time TIMESTAMP NOT NULL, -- Start time of work
     end_time TIMESTAMP, -- End time of work (NULL for ongoing work)
-    total_hours_worked NUMERIC(6, 2) GENERATED ALWAYS AS (
-        CASE
-            WHEN end_time IS NOT NULL THEN EXTRACT(EPOCH FROM (end_time - start_time)) / 3600
-            ELSE NULL
-        END
-    ) STORED, -- Automatically calculates hours worked
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Audit: record creation time
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- Audit: record last update time
     CONSTRAINT fk_employee_time_tracking FOREIGN KEY (employee_id) REFERENCES employee(employee_id),
     CONSTRAINT fk_schedule_time_tracking FOREIGN KEY (schedule_id) REFERENCES employee_schedule(schedule_id),
     CONSTRAINT chk_end_after_start CHECK (end_time IS NULL OR end_time > start_time) -- Ensures end_time is after start_time
 );
-
 
 -- Vendors table
 CREATE TABLE vendors (
