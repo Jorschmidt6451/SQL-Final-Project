@@ -26,7 +26,6 @@ CREATE TABLE employee (
     store_id INT NOT NULL,
     dept_id INT NOT NULL,
     position_id INT NOT NULL,
-    employee_type INT NOT NULL,
     first_name VARCHAR(50) NOT NULL,
     last_name VARCHAR(50) NOT NULL,
     email VARCHAR(50) NOT NULL,
