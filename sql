@@ -1,3 +1,52 @@
+WITH TopProducts AS (
+    SELECT 
+        s.product_id,
+        p.product_name,
+        t.store_id,
+        st.store_name,
+        SUM(s.quantity) AS total_quantity
+    FROM 
+        sales s
+    JOIN 
+        products p ON s.product_id = p.product_id
+    JOIN 
+        transactions t ON s.transaction_id = t.transaction_id
+    JOIN 
+        store st ON t.store_id = st.store_id
+    GROUP BY 
+        s.product_id, p.product_name, t.store_id, st.store_name
+    ORDER BY 
+        total_quantity DESC
+    LIMIT 10 -- Adjust this limit for more/less top products
+),
+ProductSalesOverTime AS (
+    SELECT 
+        s.product_id,
+        t.store_id,
+        DATE(t.transaction_date) AS transaction_date,
+        SUM(s.quantity) AS daily_quantity
+    FROM 
+        sales s
+    JOIN 
+        transactions t ON s.transaction_id = t.transaction_id
+    GROUP BY 
+        s.product_id, t.store_id, DATE(t.transaction_date)
+)
+SELECT 
+    tp.product_name,
+    tp.store_name,
+    ps.transaction_date,
+    ps.daily_quantity
+FROM 
+    ProductSalesOverTime ps
+JOIN 
+    TopProducts tp ON ps.product_id = tp.product_id AND ps.store_id = tp.store_id
+ORDER BY 
+    tp.store_name, tp.product_name, ps.transaction_date;
+
+
+
+
 #total Sales for a time period
 SELECT SUM(transaction_total) AS total_sales
 FROM Transaction
